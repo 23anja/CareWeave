@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CareWeave: clickable demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html{color-scheme:light}
+  :root{--navy:#14213D;--teal:#0F766E;--tealL:#E3F2F0;--coral:#D9462B;--coralL:#FBE3DC;--coralD:#9A2E18;--amber:#B57A08;--amberL:#FFF3D3;--blue:#2E5E8C;--blueL:#E1ECF6;--grey:#5F6B7A;--greyL:#F2F4F6;--line:#D7DCE2;--ink:#1F2937;--bg:#F7F8FA}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:15px;line-height:1.45}
+  button{font:inherit;cursor:pointer;color:var(--ink)}
+  button:focus-visible{outline:3px solid #7FD1C7;outline-offset:2px}
+  .tabs{display:flex;gap:6px;margin-left:18px}.tab{background:none;border:none;color:#C9D2DC;font-weight:600;padding:8px 12px;border-radius:8px}.tab.on{background:#24405F;color:#fff}
+  .restart{background:#24405F;border:none;color:#fff;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:600}
+  .top{background:var(--navy);color:#fff;display:flex;align-items:center;gap:16px;padding:12px 24px;position:sticky;top:0;z-index:5}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px}
+  .logo .dot{width:30px;height:30px;border-radius:50%;background:var(--teal);display:grid;place-items:center}
+  .top .meta{margin-left:auto;color:#C9D2DC;font-size:14px}
+  .demo-tag{background:#24405F;color:#7FD1C7;border-radius:999px;padding:3px 12px;font-size:13px;font-weight:600}
+  .wrap{display:grid;grid-template-columns:1fr 330px;gap:20px;padding:20px 24px;max-width:1400px;margin:0 auto}
+  .main{min-width:0}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+  h1{font-size:24px;margin:0 0 4px;color:var(--navy)}
+  h2{font-size:14px;letter-spacing:.06em;text-transform:uppercase;margin:22px 0 10px;display:flex;align-items:center;gap:8px}
+  h2 .b{width:10px;height:10px;border-radius:50%}
+  .sub{color:var(--grey);font-size:14px}
+  .pills{display:flex;gap:8px;flex-wrap:wrap}
+  .pill{border-radius:999px;padding:3px 11px;font-size:13px;font-weight:600;white-space:nowrap}
+  .p-coral{background:var(--coralL);color:var(--coralD)} .p-teal{background:var(--tealL);color:var(--teal)} .p-amber{background:var(--amberL);color:#7A5200} .p-blue{background:var(--blueL);color:var(--blue)} .p-grey{background:var(--greyL);color:var(--grey)}
+  .row{display:grid;grid-template-columns:56px 1.2fr 1.6fr 1fr 150px 34px;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;cursor:pointer;transition:box-shadow .15s,border-color .15s}
+  .row:hover{border-color:var(--teal);box-shadow:0 2px 10px rgba(15,118,110,.12)}
+  .rank{width:44px;height:44px;border-radius:50%;background:var(--coral);color:#fff;display:grid;place-items:center;font-weight:700}
+  .rank.g{background:#9AA3AE}
+  .name{font-weight:600} .when{color:var(--blue);font-weight:600;font-size:14px}
+  .btn{border:none;border-radius:8px;padding:9px 14px;font-weight:600;font-size:14px}
+  .btn:disabled{opacity:.6;cursor:default}
+  .steps li.done{color:var(--grey)} .steps li.done::marker{content:"✓  ";color:var(--teal);font-weight:700}
+  .why{font-size:14.5px}
+  .metric{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .bar{height:8px;background:var(--greyL);border-radius:99px;overflow:hidden;margin:8px 0 6px}.bar span{display:block;height:100%;border-radius:99px}
+  .big{font-size:26px;font-weight:700;color:var(--navy)}
+  .rankwhy{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px}
+  @media (max-width:1000px){.mgrid{grid-template-columns:1fr}}
+  .b-teal{background:var(--teal);color:#fff} .b-blue{background:var(--blue);color:#fff} .b-grey{background:var(--greyL);color:var(--grey)} .b-navy{background:var(--navy);color:#fff} .b-coral{background:var(--coral);color:#fff} .b-line{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .kebab{background:none;border:none;font-size:20px;color:var(--grey);padding:2px 6px;border-radius:6px}
+  .kebab:hover{background:var(--greyL)}
+  .menu{position:absolute;right:0;top:36px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:6px;z-index:4;width:250px}
+  .menu button{display:block;width:100%;text-align:left;background:none;border:none;padding:8px 10px;border-radius:6px;font-size:14px;color:var(--ink)}
+  .menu button:hover{background:var(--greyL)}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 18px;border-radius:10px;font-size:14px;z-index:10;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+  .side .card{margin-bottom:14px}
+  .side h3{margin:0 0 8px;font-size:16px;color:var(--navy)}
+  .steps{margin:0;padding-left:20px} .steps li{margin-bottom:8px}
+  .steps a{color:var(--teal);font-weight:600;cursor:pointer;text-decoration:underline}
+  .grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}
+  .fact{display:flex;align-items:center;gap:12px;background:var(--greyL);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+  .fact .t{flex:1} .fact .m{font-size:13px;color:var(--grey)}
+  .dec{border:2px solid var(--coral);border-radius:12px;padding:14px 16px;background:#fff}
+  .smd{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:start;margin:8px 0}
+  .tag{border-radius:999px;padding:3px 0;text-align:center;font-size:13px;font-weight:700;color:#fff}
+  .loop{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px}
+  .st{display:flex;gap:8px;align-items:center;font-size:14px;margin:5px 0}
+  .st i{width:14px;height:14px;border-radius:50%;border:2px solid #B0B7C0;display:inline-block}
+  .st.done i{background:var(--teal);border-color:var(--teal)} .st.due i{background:var(--amber);border-color:var(--amber)} .st.due{font-weight:600}
+  .banner{border-radius:10px;padding:12px 14px;margin:12px 0;font-size:14px}
+  .stepper{display:flex;gap:10px;margin:6px 0 16px;flex-wrap:wrap}
+  .sp{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--greyL);color:var(--grey);font-weight:600;font-size:14px;border:1px solid var(--line)}
+  .sp.on{background:var(--coral);color:#fff;border-color:var(--coral)} .sp.ok{background:var(--tealL);color:var(--teal);border-color:var(--tealL)}
+  .chk{display:flex;gap:12px;align-items:center;background:var(--greyL);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+  .chk .ic{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;flex:none}
+  .tick{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;width:100%;text-align:left;font-size:15px}
+  .tick:hover{border-color:var(--teal)}
+  .tick.on{background:var(--tealL);border-color:var(--teal);color:var(--navy);font-weight:600}
+  .box{width:20px;height:20px;border-radius:5px;border:2px solid #B0B7C0;flex:none;display:grid;place-items:center;color:#fff;font-size:13px}
+  .tick.on .box{background:var(--teal);border-color:var(--teal)}
+  textarea{width:100%;min-height:70px;border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit}
+  .note{background:#fff;border:1px solid var(--teal);border-radius:10px;padding:12px;font-size:14px}
+  .src{color:var(--blue);font-weight:600}
+  .back{background:none;border:none;color:var(--teal);font-weight:600;padding:0;margin-bottom:10px}
+  .lock{opacity:.45;pointer-events:none}
+  @media (max-width:1000px){.wrap{grid-template-columns:1fr}.row{grid-template-columns:48px 1fr 120px 34px}.row .why,.row .when{display:none}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="logo"><div class="dot">♥</div>CareWeave</div>
+  <nav class="tabs"><button class="tab" data-go="day">My Day</button><button class="tab" data-go="metrics">Pilot dashboard</button></nav>
+  <span class="demo-tag">Clickable demo · synthetic data only</span>
+  <span class="meta">Maria R. · RN case manager · Mon 9 Nov 2026, 8:00 am</span>
+  <button class="restart" data-restart="1">Restart demo</button>
+</div>
+<div class="wrap">
+  <div class="main" id="main"></div>
+  <div class="side">
+    <div class="card">
+      <h3>Try this (2 minutes) <span class="sub" id="tp"></span></h3>
+      <ol class="steps">
+        <li id="t1"><a data-go="harold">Open Harold</a>: request prescriber clarification on the dose conflict, then check My Day: a “waiting” loop appears with an acknowledgement deadline.</li>
+        <li id="t2"><a data-go="evelyn">Open Evelyn</a> → <b>Start call</b>: details stay locked until Evelyn agrees to share with her daughter.</li>
+        <li id="t3"><a data-go="rosa">Open Rosa</a>: highest risk score, ranked last. Merge the duplicate record and see why it’s a treatment question, not an adherence one.</li>
+        <li id="t4">On <a data-go="day">My Day</a>, use <b>⋮</b> to override the ranking with a reason.</li>
+        <li id="t5">Open the <a data-go="metrics">Pilot dashboard</a> to see how the pilot is judged.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>What the colours mean</h3>
+      <div class="pills" style="margin-bottom:8px"><span class="pill p-teal">Confirmed</span><span class="pill p-coral">Disputed / Missing</span><span class="pill p-amber">Awaiting review</span><span class="pill p-grey">Stale</span></div>
+      <div class="sub">Every fact shows when it happened, when we received it, and its source. CareWeave never picks between conflicting sources: the nurse verifies, the prescriber decides.</div>
+    </div>
+    <div class="card">
+      <h3>Where AI stops</h3>
+      <div class="sub"><b style="color:var(--teal)">Automates:</b> summaries with sources, pre-filled fields, factual note draft, gap detection, logging.<br><b style="color:var(--amber)">Suggests, nurse confirms:</b> queue order, next action, best time.<br><b style="color:var(--coral)">Human only:</b> final note, clinical conflicts, sensitive outreach, care plans, closing cases.</div>
+    </div>
+  </div>
+</div>
+<script>
+const P = {
+  harold:{rank:1,group:"now",name:"Harold Benson",age:78,id:"M-30112",plan:"MA-HMO",lang:"English",pcp:"Dr. L. Okafor",extra:"Lives with wife Joan (dementia)",
+    sub:"Discharged Sat · heart failure",why:"New diuretic dose; no fill visible in pharmacy feed",when:"Now · mornings answered 3 of 3",action:"Call now",deadline:"Plan target: contact by Tue 10 Nov",
+    changes:[["Discharged home after 4 days, heart failure","Event Sat 7 Nov 14:10 · received Sun 8 Nov 06:00 · ADT","Confirmed"],
+      ["Furosemide changed to 40 mg twice daily","Event 7 Nov · received 8 Nov · discharge summary (HIE)","Awaiting review"],
+      ["No fill visible since discharge","Checked today 07:55 · pharmacy feed (PBM)","Missing"],
+      ["Claims last updated 22 Sep: this admission not yet billed","Claims · older than 30 days","Stale"]],
+    decision:{title:"Furosemide dose differs between sources",seen:"Pharmacy: 20 mg once daily (filled 2 Oct, 30-day supply, ran out 1 Nov). Hospital: 40 mg twice daily (7 Nov).",may:"Harold may still be taking the old dose, or none.",do:"Ask him to read the bottle. Request prescriber clarification.",to:"Dr. L. Okafor’s office"},
+    loops:[{t:"7-day follow-up visit",o:"Owner: Maria · visit by 14 Nov",s:["Visit booked","Ride confirmed","Attended or missed → next step"],d:0}],
+    call:{number:"Home phone (555) 010-2231 · Harold’s own · verified 3 Nov",consent:["ok","Member himself: no caregiver consent needed"],lang:"English",vm:"Allowed, no health details",
+      ticks:["Read the bottle: taking 20 mg once daily","New dose fill arranged once prescriber confirms","PCP visit booked: Thu 12 Nov","Asked who manages his pills now"],
+      fu:[["Prescriber clarification","Dr. Okafor’s office","Today 1:40 pm"],["Ride to PCP visit","Transport vendor","Wed 11 Nov"]]}},
+  darnell:{rank:2,group:"later",name:"Darnell Price",age:52,id:"M-41908",plan:"MA D-SNP",lang:"English",pcp:"Mercy Clinic",extra:"6 ED visits since June",
+    sub:"ED visit last night",why:"Old number dead; newer number found in pharmacy feed (19 Oct)",when:"After 4 pm · reminder set",action:"Scheduled",deadline:"Unreached 41 days: rank rises",
+    changes:[["ED visit, Mercy East, discharged 04:10","Event Sun 8 Nov 23:40 · received Mon 05:10 · ADT · no reason given","Awaiting review"],
+      ["Phone (555) 010-7788 not in service, 3 attempts","Contact history · last 6 Nov","Confirmed"],
+      ["Newer phone (555) 010-4410 on pharmacy profile","Event 19 Oct · pharmacy feed","Awaiting review"],
+      ["Housing ‘stable’ (Dec 2025) but ED address is Hope Street Shelter","SDOH screen 11 months old vs ADT registration","Disputed"],
+      ["Albuterol 30-day fill 19 Oct: supply lasts to 18 Nov","Pharmacy feed · no refill alert (negative test)","Confirmed"]],
+    decision:{title:"Which number should Maria use?",seen:"3 calls to the number on file: not in service. Pharmacy profile has a newer number from 19 Oct.",may:"Darnell changed numbers; his housing may have changed too.",do:"Text the newer number after 4 pm. Confirm it is his before updating the record. Re-screen housing.",to:"Community health worker team"},
+    loops:[{t:"Reach Darnell",o:"Owner: Maria · by Wed 11 Nov",s:["Text sent to newer number","Number confirmed as his","If silent by Wed: health-worker visit"],d:0}],
+    call:{number:"Mobile (555) 010-4410 · from pharmacy profile · not yet confirmed",consent:["warn","Confirm identity first; number not yet verified"],lang:"English",vm:"Not yet: number unverified, no voicemail",
+      ticks:["Identity confirmed; number is his","Housing re-screen done","ED visit reason discussed","Inhaler technique and supply checked"],
+      fu:[["Update contact record","Maria","Today"],["Housing referral","Community partner","Thu 12 Nov"]]}},
+  keisha:{rank:3,group:"now",name:"Keisha Morgan",age:38,id:"M-52260",plan:"MA D-SNP",lang:"English",pcp:"Dr. P. Nair",extra:"BH co-managed · sensitive",sensitive:true,
+    sub:"BH co-managed · sensitive",why:"Lithium supply ran out 4 Nov (est.); details visible to BH role",when:"Text first · her stated preference",action:"Send text",deadline:"Safety first: follow BH protocol",
+    changes:[["Lithium 300 mg, 30-day fill on 5 Oct: estimated run-out 4 Nov","Pharmacy feed · 5 days overdue today","Missing"],
+      ["No lithium level since 12 Apr","Labs feed","Missing"],
+      ["Psychiatry visits 14 and 28 Oct missed","Clinic says ‘cancelled’, plan says ‘no-show’","Disputed"],
+      ["19 Oct note mentions an eviction notice","Free-text case note · housing marked stable in March","Awaiting review"]],
+    decision:{title:"Possible gap in a safety-critical medicine",seen:"30-day lithium fill on 5 Oct; no later fill visible; no level since April.",may:"Her supply may have run out about 5 days ago.",do:"Text to agree a call time. Follow the safety protocol. Ask psychiatry for a level and a new appointment. Loop in her BH counsellor.",to:"Psychiatry office + BH counsellor T. Rivera"},
+    loops:[{t:"Housing referral",o:"Owner: Maria · by Fri 13 Nov",s:["Referral sent","Partner accepted","Housing plan confirmed"],d:0}],
+    call:{number:"Mobile · Keisha’s own · prefers text",consent:["ok","Member herself"],lang:"English",vm:"Text only, no health details",
+      ticks:["Call time agreed by text","Safety screen done (per protocol)","Lithium supply confirmed or fill arranged","Housing situation discussed"],
+      fu:[["Lithium level and appointment","Psychiatry office","Wed 11 Nov"],["Co-management update","BH counsellor T. Rivera","Today"]]}},
+  evelyn:{rank:4,group:"later",name:"Evelyn Park",age:84,id:"M-63015",plan:"Dual-eligible",lang:"Korean",pcp:"Dr. S. Kim",extra:"Daughter Grace is caregiver",
+    sub:"Caregiver strain",why:"Caregiver call needs Evelyn’s consent first; walker auth stuck 19 days",when:"2 pm · Korean interpreter booked",action:"Scheduled",deadline:"Fall risk",
+    changes:[["Amlodipine 5 mg (cardiology) and 10 mg (PCP) both active","Pharmacy feed · Oct fills","Disputed"],
+      ["Walker authorisation still ‘pending’","Submitted 21 Oct · no update in 19 days · UM","Stale"],
+      ["Home health ended 26 Oct; fall on 2 Sep","Claims","Confirmed"],
+      ["Primary phone belongs to daughter Grace; no consent recorded","Eligibility record","Missing"]],
+    decision:{title:"Duplicate blood-pressure medicine from two prescribers",seen:"Two active amlodipine fills: 5 mg from cardiology, 10 mg from her PCP.",may:"She may be taking both, raising fall risk.",do:"Ask what she takes. Send to the pharmacist for review; prescribers decide.",to:"Clinical pharmacist J. Lee"},
+    loops:[{t:"Walker authorisation",o:"Owner: UM team · escalated today",s:["Escalated","Approved","Walker delivered"],d:0}],
+    call:{number:"(555) 010-3390 · belongs to daughter Grace",consent:["block","Not on file: speak with Evelyn first and record her agreement"],lang:"Korean interpreter for Evelyn (line booked 2 pm)",vm:"Allowed, no health details",
+      ticks:["Duplicate amlodipine reviewed with Evelyn","Walker authorisation escalated","Caregiver strain screen offered to Grace","Respite information sent to Grace"],
+      fu:[["Pharmacist review","J. Lee, PharmD","Wed 11 Nov"],["Walker authorisation","UM team","Tue 10 Nov"],["Respite information","Maria","Fri 13 Nov"]]}},
+  rosa:{rank:5,group:"wait",name:"Rosa Delgado",age:61,id:"M-20577 / M-20577-A",plan:"MA-PPO",lang:"English",pcp:"Dr. M. Shah",extra:"Risk score 0.71 (highest of the five)",
+    sub:"Possible duplicate ID",why:"Data steward merging records; no adherence card until merged",when:"Due back 1 pm",action:"Waiting",deadline:"Held, not hidden",held:true,
+    changes:[["Two member IDs with the same name and date of birth","M-20577 (2019) and M-20577-A (re-enrolled Jan 2026)","Awaiting review"],
+      ["Metformin 90-day fill 18 Jun under the first ID: run-out 16 Sep","Pharmacy feed · looks 54 days overdue","Disputed"],
+      ["Metformin 90-day mail-order fill 20 Sep under the second ID","Pharmacy feed","Confirmed"],
+      ["A1c 7.6% (Feb) then 8.9% (Aug)","Labs feed","Confirmed"]],
+    decision:{title:"Possible duplicate record",seen:"Two IDs, same person. Her refills are split between them.",may:"She only looks like she stopped her metformin.",do:"Send to the data steward to merge. No adherence outreach until merged.",to:"Data steward"},
+    loops:[],
+    call:{number:"Mobile · Rosa’s own · prefers text after 6 pm",consent:["ok","Member herself"],lang:"English",vm:"Text after 6 pm",
+      ticks:["Asked about cost and glucose testing","PCP treatment review requested","Next check-in agreed"],fu:[["Treatment review","Dr. M. Shah","Fri 13 Nov"]]}}
+};
+const WHY = {harold:["Time-sensitive: plan target, contact by Tue","Barrier: dose differs between sources"],darnell:["ED visit last night","Repeated failed outreach: unreached 41 days"],keisha:["Safety: lithium supply ran out (est.)","Barrier: eviction notice in last note"],evelyn:["Barrier: duplicate BP medicine (fall risk)","Barrier: walker authorisation stuck 19 days"],rosa:["Held: possible duplicate record","No adherence card until merged"]};
+const S0 = () => ({view:"day", id:null, clar:{}, verified:{}, merged:false, consent:{}, ticks:{}, saved:{}, failNext:false, overrides:[], order:["harold","keisha","darnell","evelyn","rosa"], step:1, menu:null, seenMetrics:false});
+let S = S0();
+const _unused = {view:"day", id:null, clar:{}, verified:{}, merged:false, consent:{}, ticks:{}, saved:{}, failNext:false, overrides:[], order:["harold","keisha","darnell","evelyn","rosa"], step:1, menu:null};
+const $ = h => { const d = document.createElement("div"); d.innerHTML = h.trim(); return d.firstChild; };
+const stPill = s => `<span class="pill ${s==="Confirmed"?"p-teal":s==="Awaiting review"?"p-amber":s==="Stale"?"p-grey":"p-coral"}">${s}</span>`;
+function toast(m){const t=$(`<div class="toast">${m}</div>`);document.body.appendChild(t);setTimeout(()=>t.remove(),2600);}
+function go(v,id){S.view=v;S.id=id||null;S.step=1;S.menu=null;render();window.scrollTo({top:0,behavior:"smooth"});}
+
+function rowHtml(k){
+  const p=P[k]; const btn=p.group==="now"?"b-teal":p.group==="later"?"b-blue":"b-grey";
+  const why = k==="rosa"&&S.merged ? "Merged: fills on time; A1c rising → treatment review, not adherence" : p.why;
+  return `<div class="row" data-open="${k}" style="position:relative">
+    <div class="rank ${p.held&&!S.merged?"g":""}">#${p.rank}</div>
+    <div><div class="name">${p.name}, ${p.age}</div><div class="sub">${p.sub}</div></div>
+    <div class="why">${why}</div>
+    <div class="when">${k==="rosa"&&S.merged?"Merged · text after 6 pm":p.when}</div>
+    <button class="btn ${btn}" data-act="${k}">${k==="rosa"&&S.merged?"Message PCP":p.action}</button>
+    <div style="position:relative"><button class="kebab" data-menu="${k}" title="Override ranking">⋮</button>
+    ${S.menu===k?`<div class="menu"><div class="sub" style="padding:4px 10px">Override with a reason. Logged and reviewed weekly; we review the ranking if overrides pass 30% for 2 weeks.</div>
+      <button data-ovr="${k}|Move up: clinical judgment">Move up: clinical judgment</button>
+      <button data-ovr="${k}|Move down: member asked for later">Move down: member asked for later</button>
+      <button data-ovr="${k}|Data looks wrong: report it">Data looks wrong: report it</button></div>`:""}</div>
+  </div>`;
+}
+function dayView(){
+  const groups={now:[],later:[],wait:[]};
+  S.order.forEach(k=>groups[P[k].group].push(k));
+  const waitExtra = S.clar.harold ? `<div class="row" data-open="harold"><div class="rank">#1</div><div><div class="name">Harold · dose question</div><div class="sub">Prescriber clarification</div></div><div class="why">Sent ${S.clar.harold} to Dr. Okafor’s office; acknowledgement due 1:40 pm</div><div class="when">Escalates if late</div><button class="btn b-grey">Awaiting</button><div></div></div>` : "";
+  const sec=(id,label,col,list,extra)=>`<h2><span class="b" style="background:${col}"></span><span style="color:${col}">${label}</span></h2>${list.map(rowHtml).join("")}${extra||""}`;
+  return `<div class="card" style="margin-bottom:6px"><h1>Good morning, Maria</h1>
+    <div class="sub">Grouped by <b>when</b> you act. Priority (#) is kept separate from the best time to reach someone. Click any member to open them.</div>
+    <div class="pills" style="margin-top:10px"><span class="pill p-coral">${groups.now.length} do now</span><span class="pill p-blue">${groups.later.length} later today</span><span class="pill p-grey">${groups.wait.length+(S.clar.harold?1:0)} waiting on others</span>${S.overrides.length?`<span class="pill p-amber">${S.overrides.length} override logged</span>`:""}</div></div>
+    ${sec("now","Do now","var(--coral)",groups.now)}
+    ${sec("later","Later today · at their best time","var(--blue)",groups.later)}
+    ${sec("wait","Waiting on others","var(--grey)",groups.wait,waitExtra)}`;
+}
+function memberView(k){
+  const p=P[k]; const d=p.decision;
+  let decision;
+  if(k==="rosa"&&S.merged){
+    decision=`<div class="dec" style="border-color:var(--teal)"><b>Records merged · fills are continuous</b> ${stPill("Confirmed")}
+      <div class="smd"><span class="tag" style="background:var(--navy)">Seen</span><div>Metformin 90-day fills on 18 Jun and 20 Sep: no gap. A1c rose from 7.6% to 8.9%.</div></div>
+      <div class="smd"><span class="tag" style="background:var(--amber)">May mean</span><div>Treatment may need adjusting. This is not an adherence problem.</div></div>
+      <div class="smd"><span class="tag" style="background:var(--teal)">Do</span><div>Message her PCP for a treatment review. Text Rosa after 6 pm this week.</div></div>
+      <div class="banner p-teal">No adherence alert fires (negative test N2 in the annex).</div></div>`;
+  } else {
+    const ver=S.verified[k], sent=S.clar[k];
+    decision=`<div class="dec"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><b>${d.title}</b>${stPill(ver?"Confirmed":"Disputed")}</div>
+      <div class="smd"><span class="tag" style="background:var(--navy)">Seen</span><div>${d.seen}</div></div>
+      <div class="smd"><span class="tag" style="background:var(--amber)">May mean</span><div>${d.may}</div></div>
+      <div class="smd"><span class="tag" style="background:var(--teal)">Do</span><div>${d.do}</div></div>
+      <div class="pills" style="margin-top:10px">
+        ${k==="rosa"?`<button class="btn b-navy" data-merge="1">Send to data steward → simulate merge</button>`:
+        `<button class="btn b-navy" data-clar="${k}" ${sent?"disabled":""}>${sent?"Request sent "+sent:"Request clarification from "+d.to}</button>
+         <button class="btn b-line" data-ver="${k}">${ver?"Verified with member ✓":"Mark verified with member"}</button>`}
+      </div>
+      <div class="sub" style="margin-top:8px">CareWeave never resolves this itself. The RN verifies and coordinates; the prescriber or data steward decides.</div></div>`;
+  }
+  const loops=[...p.loops];
+  if(S.clar[k]) loops.unshift({t:"Clarification: "+d.title.toLowerCase(),o:"Owner: "+d.to,s:["Sent "+S.clar[k],"Acknowledged · due 1:40 pm","Resolved and member informed"],d:1,due:1});
+  const loopHtml = loops.length?loops.map(l=>`<div class="loop"><b>${l.t}</b><div class="sub">${l.o}</div>${l.s.map((s,i)=>`<div class="st ${i<l.d?"done":(l.due&&i===l.d?"due":"")}"><i></i>${s}</div>`).join("")}
+     ${l.due?`<div class="banner p-amber" style="margin:8px 0 0">No acknowledgement by 1:40 pm → on-call physician and Maria’s supervisor are paged.</div>`:""}</div>`).join(""):`<div class="sub">No open loops yet.</div>`;
+  const sens = p.sensitive?`<div class="banner p-blue">Sensitive: behavioral-health details are visible to the BH role only. Maria sees what she needs to coordinate safely.</div>`:"";
+  const held = p.held&&!S.merged?`<div class="banner p-grey"><b>Held, not hidden:</b> a possible duplicate record would make Rosa look non-adherent. Rules pause until the merge.</div>`:"";
+  return `<button class="back" data-go="day">← My Day</button>
+   <div class="card"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+     <div><h1>${p.name}, ${p.age}</h1><div class="sub">${p.id} · ${p.plan} · ${p.lang} · PCP ${p.pcp} · ${p.extra}</div></div>
+     <div class="pills"><span class="pill p-coral">${p.deadline}</span><button class="btn b-coral" data-call="${k}">Start call</button></div></div>
+     <div class="rankwhy"><span class="pill p-navy" style="background:var(--navy);color:#fff">Priority now #${p.rank}</span><span class="pill p-blue">Best time: ${p.when}</span><span class="sub">Why this rank:</span>${WHY[k].map(w=>`<span class="pill p-grey">${w}</span>`).join("")}</div>
+     ${sens}${held}
+     <div class="grid2" style="margin-top:6px"><div>
+       <h2><span style="color:var(--teal)">1 · What changed</span></h2>
+       ${p.changes.map(c=>`<div class="fact"><div class="t"><b>${c[0]}</b><div class="m">${c[1]}</div></div>${stPill(c[2])}</div>`).join("")}
+       <h2><span style="color:var(--coral)">2 · Needs your decision</span></h2>${decision}
+     </div><div><h2><span style="color:var(--navy)">3 · Open loops</span></h2>${loopHtml}</div></div></div>`;
+}
+function callView(k){
+  const p=P[k], c=p.call; const consentOk = c.consent[0]!=="block" || S.consent[k];
+  const ticks=S.ticks[k]||(S.ticks[k]=[]);
+  const stepBtn=(n,l)=>`<button class="sp ${S.step===n?"on":S.step>n?"ok":""}" data-step="${n}">${S.step>n?"✓":n} ${l}</button>`;
+  const ic=(t)=>t==="ok"?`<span class="ic" style="background:var(--teal)">✓</span>`:t==="warn"?`<span class="ic" style="background:var(--amber)">!</span>`:`<span class="ic" style="background:var(--coral)">✕</span>`;
+  let body="";
+  if(S.step===1){
+    body=`<div class="chk">${ic(c.consent[0]==="block"?"warn":"ok")}<div><div class="sub">Whose number</div><b>${c.number}</b></div></div>
+      <div class="chk">${ic(consentOk?(c.consent[0]==="warn"?"warn":"ok"):"block")}<div style="flex:1"><div class="sub">Consent</div><b>${S.consent[k]?"Evelyn agreed to share with Grace (verbal, 9 Nov) ✓":c.consent[1]}</b></div>
+        ${c.consent[0]==="block"&&!S.consent[k]?`<button class="btn b-teal" data-consent="${k}">Evelyn agreed (record it)</button>`:""}</div>
+      <div class="chk">${ic("ok")}<div><div class="sub">Language</div><b>${c.lang}</b></div></div>
+      <div class="chk">${ic("ok")}<div><div class="sub">Voicemail</div><b>${c.vm}</b></div></div>
+      <div class="chk">${ic("ok")}<div><div class="sub">Recording</div><b>Off for this call</b></div></div>
+      <button class="btn b-navy" data-step="2" ${consentOk?"":"disabled"} style="margin-top:6px">${consentOk?"Continue to the call →":"Locked until consent is recorded"}</button>`;
+  } else if(S.step===2){
+    body=`<div style="font-weight:600;margin-bottom:4px">Tap what happened during the call</div><div class="sub" style="margin-bottom:10px">Each tick becomes a structured field in the note, so nothing is typed twice. Tap again to undo.</div>
+      ${c.ticks.map((t,i)=>`<button class="tick ${ticks.includes(i)?"on":""}" data-tick="${k}|${i}"><span class="box">${ticks.includes(i)?"✓":""}</span>${t}</button>`).join("")}
+      <div class="sub" style="margin:6px 0 10px">Attempt logged automatically: 14:12 · answered.</div>
+      <button class="btn b-navy" data-step="3">Finish call →</button>`;
+  } else {
+    const done=c.ticks.filter((_,i)=>ticks.includes(i));
+    const sv=S.saved[k];
+    body=`<div class="note"><b style="color:var(--teal)">Draft note · AI writes facts only, each with its source</b><br>
+      Call with ${p.name.split(" ")[0]}${k==="evelyn"?" via Korean interpreter and daughter Grace; member agreed to share (9 Nov) <span class='src'>[call]</span>":""}. ${done.length?done.join(". ")+".":"<i>No items ticked yet.</i>"} <span class="src">[call]</span></div>
+      <div style="margin:10px 0 4px"><b>Assessment</b> <span class="sub">(Maria writes her judgment; AI never writes this part)</span></div>
+      <textarea placeholder="Type your clinical assessment…"></textarea>
+      <div style="margin:10px 0 4px"><b>Follow-ups created</b></div>
+      ${c.fu.map(f=>`<div class="st"><i></i><b>${f[0]}</b>&nbsp;·&nbsp;${f[1]} · due ${f[2]}</div>`).join("")}
+      <div class="pills" style="margin-top:12px;align-items:center">
+        <button class="btn b-coral" data-sign="${k}">Sign and save</button>
+        <label class="sub"><input type="checkbox" data-fail ${S.failNext?"checked":""}> Simulate a failed save</label>
+        ${sv==="saved"?`<span class="pill p-teal">✓ Saved to CM system 14:31</span>`:sv==="pending"?`<span class="pill p-amber">Saving… pending</span>`:sv==="failed"?`<span class="pill p-coral">Save failed: contact stays open</span><button class="btn b-line" data-sign="${k}">Retry</button>`:""}
+      </div>`;
+  }
+  return `<button class="back" data-go="member" data-id="${k}">← ${p.name}</button>
+    <div class="card"><h1>Call · ${p.name}, ${p.age}</h1><div class="sub">${p.why}</div>
+    <div class="stepper">${stepBtn(1,"Before: is it safe?")}${stepBtn(2,"During: tap, don’t type")}${stepBtn(3,"After: sign once")}</div>${body}</div>`;
+}
+function metricsView(){
+  const ov = S.overrides.length;
+  const M=[["North star","Real conversations per nurse a day","5.1","Target 5.5 · from 4",5.1/5.5,"On track","teal"],
+    ["Efficiency","Prep + note minutes per completed contact","26","Target 24 · from 32",(32-26)/(32-24),"On track","teal"],
+    ["Engagement","Two-way contacts ÷ eligible attempts","34%","Target 36% · from 29%",34/36,"On track","teal"],
+    ["Execution","High-risk discharges reached in 2 business days","88%","Target 90% (plan target) · from 70%",88/90,"Close","amber"],
+    ["Trust","Queue override rate","18%","Review if >30% for 2 weeks*",18/30,"OK","teal"],
+    ["Trust","AI drafts signed, with or without edits","64%","Target ≥60%",1,"On track","teal"],
+    ["Equity","Reached in their best contact window","72%","Target ≥70%*",1,"On track","teal"],
+    ["Safety","Members with no attempt in 14 days","0","Must stay 0",1,"OK","teal"],
+    ["Safety","Escalations acknowledged within 4 business hours","96%","Target ≥95%",1,"On track","teal"],
+    ["Guardrail","After-hours note minutes per nurse a day","14","Target 10 · from 30",(30-14)/(30-10),"Close","amber"],
+    ["Guardrail","Unauthorised disclosures","0","Hard stop: any one pauses the pilot",1,"OK","teal"],
+    ["Adoption","Nurse pulse: ‘support, not surveillance’","74%","Target ≥70%*",1,"On track","teal"]];
+  const col={teal:"var(--teal)",amber:"var(--amber)",coral:"var(--coral)"};
+  return `<div class="card" style="margin-bottom:12px"><h1>Pilot dashboard</h1>
+    <div class="sub">Week 6 of 12 · 15 nurses · one Medicare Advantage plan. <b>Illustrative synthetic numbers</b> showing how the pilot would be judged; team-level only, no individual nurse ranking.</div>
+    <div class="pills" style="margin-top:10px"><span class="pill p-teal">Gate 1 · data quality: passed</span><span class="pill p-amber">Gate 2 · trust: week 7</span><span class="pill p-grey">Gate 3 · go / no-go: week 12</span>${ov?`<span class="pill p-amber">${ov} override${ov>1?"s":""} logged in this demo</span>`:""}</div></div>
+    <div class="mgrid">${M.map(m=>`<div class="metric"><div class="sub" style="font-weight:600;color:${col[m[6]]}">${m[0]}</div><div style="font-weight:600;margin:2px 0 6px">${m[1]}</div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="big">${m[2]}</span><span class="pill ${m[6]==="teal"?"p-teal":"p-amber"}">${m[5]}</span></div>
+      <div class="bar"><span style="width:${Math.min(100,Math.round(m[4]*100))}%;background:${col[m[6]]}"></span></div><div class="sub">${m[3]}</div></div>`).join("")}</div>
+    <div class="sub" style="margin-top:10px">* Initial thresholds we set ourselves, not benchmarks; tuned with pilot data in weeks 4–7.</div>`;
+}
+function render(){
+  const m=document.getElementById("main");
+  m.innerHTML = S.view==="day"?dayView():S.view==="metrics"?metricsView():S.view==="member"?memberView(S.id):callView(S.id);
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.go===S.view||(b.dataset.go==="day"&&S.view!=="metrics")));
+  if(S.view==="metrics") S.seenMetrics=true;
+  const done=[!!S.clar.harold,!!S.consent.evelyn,S.merged,S.overrides.length>0,S.seenMetrics];
+  done.forEach((d,i)=>document.getElementById("t"+(i+1)).classList.toggle("done",d));
+  document.getElementById("tp").textContent="· "+done.filter(Boolean).length+" of 5 done";
+}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-restart],[data-go],[data-open],[data-act],[data-menu],[data-ovr],[data-clar],[data-ver],[data-merge],[data-call],[data-step],[data-consent],[data-tick],[data-sign],[data-fail]");
+  if(!t){ if(S.menu){S.menu=null;render();} return; }
+  const ds=t.dataset;
+  if(ds.restart){ S=S0(); render(); toast("Demo restarted."); return; }
+  if(ds.go){ if(ds.go==="day") go("day"); else if(ds.go==="metrics") go("metrics"); else if(ds.go==="member") go("member",ds.id); else go("member",ds.go); return; }
+  if(ds.menu){ e.stopPropagation(); S.menu = S.menu===ds.menu?null:ds.menu; render(); return; }
+  if(ds.ovr){ e.stopPropagation(); const [k,r]=ds.ovr.split("|"); S.overrides.push([k,r]); const i=S.order.indexOf(k); S.order.splice(i,1);
+    if(r.startsWith("Move up")) S.order.splice(Math.max(0,i-1),0,k); else if(r.startsWith("Move down")) S.order.splice(Math.min(S.order.length,i+1),0,k); else S.order.splice(i,0,k);
+    S.menu=null; render(); toast("Override logged with reason: “"+r+"”. Reviewed weekly with nurses."); return; }
+  if(ds.act){ e.stopPropagation(); const k=ds.act; if(P[k].group==="now") go("call",k); else if(k==="rosa"&&S.merged) toast("Message sent to Dr. Shah: treatment review requested."); else go("member",k); return; }
+  if(ds.open){ go("member",ds.open); return; }
+  if(ds.clar){ S.clar[ds.clar]="9:40"; render(); toast("Clarification sent. Acknowledgement due 1:40 pm, or it escalates."); return; }
+  if(ds.ver){ S.verified[ds.ver]=!S.verified[ds.ver]; render(); return; }
+  if(ds.merge){ toast("Sent to data steward…"); setTimeout(()=>{S.merged=true;render();toast("Merged. No adherence alert: treatment review suggested instead.");},900); return; }
+  if(ds.call){ go("call",ds.call); return; }
+  if(ds.consent){ S.consent[ds.consent]=true; render(); return; }
+  if(ds.step){ const n=+ds.step; const c=P[S.id].call; if(n>1 && c.consent[0]==="block" && !S.consent[S.id]) return; S.step=n; render(); return; }
+  if(ds.tick){ const [k,i]=ds.tick.split("|"); const a=S.ticks[k]; const j=a.indexOf(+i); j>=0?a.splice(j,1):a.push(+i); render(); return; }
+  if(ds.fail!==undefined){ S.failNext=t.checked; return; }
+  if(ds.sign){ const k=ds.sign; S.saved[k]="pending"; render(); setTimeout(()=>{S.saved[k]=S.failNext?"failed":"saved"; if(S.failNext) S.failNext=false; render();},900); return; }
+});
+render();
+</script>
+</body>
+</html>
